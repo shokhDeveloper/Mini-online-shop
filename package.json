@@ -1,0 +1,41 @@
+{
+  "name": "magazin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "start:dev": "nodemon --ext * src/server.js"
+  },
+  "imports": {
+    "#network": "./src/lib/network.js",
+    "#config": "./src/config.js",
+    "#controller/*": "./src/controller/*",
+    "#router/*": "./src/router/*",
+    "#validator": "./src/utils/validator.js",
+    "#middlewares": "./src/middlewares/model.js",
+    "#error": "./src/utils/error.js",
+    "#jwt": "./src/utils/jwt.js",
+    "#postgreSQL": "./src/middlewares/postgres.js",
+    "#verifyToken": "./src/middlewares/authToken.js",
+    "#adminVerifyToken": "./src/middlewares/adminToken.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "joi": "^17.13.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5",
+    "sha256": "^0.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
