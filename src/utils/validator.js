@@ -1,4 +1,4 @@
-import { ClientError } from "#error";
+import { ClientError, globalError } from "#error";
 import { serverConfiguration } from "#config";
 import path from "node:path";
 import Joi from "joi"
@@ -46,7 +46,22 @@ export const avatarValidator = (req, res, next) => {
 export const productValidator = Joi.object({
     product_name: Joi.string().max(32).error(() => new Error("Product name is required !")).required(),
     product_price: Joi.number().error(() => new Error("Product price is required !")).required(),
-    product_image: Joi.string().max(500).error(() => new Error("Product image is required")).required(),
-    categoryId: Joi.number().error(() => new Error("Category is is required")).required(),
-    product_date: Joi.date().error(() => new Error("Product date is required !")).required() 
+    category_id: Joi.number().error(() => new Error("Category id is is required")).required()
 });
+
+export const productImageValidator = (req, res, next) => {
+    try{
+        if(req.files){
+            const {product_image:{name, size}} = req.files;
+            let product_name = name.replaceAll(" ", "")
+            const fileSize = size / 1024 ** 2;
+            const extname = path.extname(name);
+            if(fileSize > 7) throw new ClientError(413, "Product image size must not exceed 7mb");
+            if(!serverConfiguration.avatar_formats.includes(extname)) throw new ClientError(415, "The program does not support the avatar format !");
+            req.product_image = product_name;
+            return next();
+        }else throw new ClientError(400, "Product image is required !");
+    }catch(error){
+        return globalError(res, error)
+    }
+}
