@@ -43,3 +43,10 @@ export const avatarValidator = (req, res, next) => {
         return res.status(error.status || 500).json({message: error.message, statusCode: error.status || 500});
     }
 }
+export const productValidator = Joi.object({
+    product_name: Joi.string().max(32).error(() => new Error("Product name is required !")).required(),
+    product_price: Joi.number().error(() => new Error("Product price is required !")).required(),
+    product_image: Joi.string().max(500).error(() => new Error("Product image is required")).required(),
+    categoryId: Joi.number().error(() => new Error("Category is is required")).required(),
+    product_date: Joi.date().error(() => new Error("Product date is required !")).required() 
+});

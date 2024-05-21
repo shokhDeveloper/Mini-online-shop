@@ -19,3 +19,31 @@ CREATE TABLE admins(
     admin_password VARCHAR(128) NOT NULL,
     admin_confirm_password VARCHAR(128) NOT NULL
 );
+
+DROP TABLE IF EXISTS categories CASCADE;
+CREATE TABLE categories(
+    category_id BIGSERIAL NOT NULL PRIMARY KEY,
+    category_name VARCHAR(50) NOT NULL
+);
+
+INSERT INTO categories (category_name) VALUES
+('Telefonlar'),
+('Kompyuter va ofis buyumlari'),
+('Noutbuklar'),
+('Geymerlar uchun'),
+('Televizorlar'),
+('Kiyimlar'),
+('Oshxona buyumlari'),
+('Kitoblar');
+
+DROP TABLE IF EXISTS products CASCADE;
+CREATE TABLE products(
+    product_id INT generated always as identity primary key,
+    product_name CHARACTER VARYING(32) NOT NULL,
+    product_price decimal(20, 2) NOT NULL,
+    product_image VARCHAR(500) NOT NULL,
+    category_id INT references categories(category_id) NOT NULL,
+    created_at TIMESTAMPTZ default current_timestamp 
+);
+-- INSERT INTO products (product_name, product_price, product_image, category_id) VALUES
+-- ('Asus', 1200.00, 'asus.png', 2)

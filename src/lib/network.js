@@ -7,6 +7,5 @@ try{
     }
 }catch(error){
     console.log("Network error:", error)
-}
-
+};   
 export {IP_ADDRESS}

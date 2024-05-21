@@ -27,3 +27,5 @@ export const fetch = async (query, type, ...params) => {
 export const getUsers = () => fetch("SELECT * FROM users;") 
 export const getUserFound = (id) => fetch("SELECT * FROM users WHERE user_id=$1", true, id); 
 export const getAdmins = () => fetch("SELECT * FROM admins");
+export const getProducts = () => fetch("SELECT * FROM products;");
+export const getCategories = () => fetch("SELECT * FROM categories;")

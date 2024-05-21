@@ -1,6 +1,6 @@
 import { IP_ADDRESS } from "#network";
 import dotenv from "dotenv"
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 export const serverConfiguration = {
   PORT,

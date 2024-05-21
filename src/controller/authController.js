@@ -57,10 +57,10 @@ export const authController = {
                 }
                 if(AdminValidator.validate(adminValues)){
                     const getAdmin = await getAdmins();
-                    if(getAdmin.admin_username == adminValues.admin_username){
-                        if(adminValues.admin_password == adminValues.admin_confirm_password){
-                            const match = await bcrypt.compare(adminValues.admin_password, getAdmin.admin_password);
-                            if(match) return res.status(200).json({message: "The admin successfully logined", statusCode: 200, accessToken: tokenConfig.createToken({admin_id: getAdmin.admin_id, admin: true, userAgent: req.headers["user-agent"]}, process.env.TOKEN_KEY)})
+                    if(getAdmin[0].admin_username == adminValues.admin_username){
+                      if(adminValues.admin_password == adminValues.admin_confirm_password){
+                            const match = await bcrypt.compare(adminValues.admin_password, getAdmin[0].admin_password);
+                            if(match) return res.status(200).json({message: "The admin successfully logined", statusCode: 200, accessToken: tokenConfig.createToken({admin_id: getAdmin[0].admin_id, admin: true, userAgent: req.headers["user-agent"]}, process.env.TOKEN_KEY)})
                             else throw new ClientError(400, "There is an error logging in");
                         }else throw new ClientError(400, "There is an error logging in")
                     }else throw new ClientError(400, "There is an error logging in");
