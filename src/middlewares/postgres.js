@@ -5,7 +5,7 @@ export const pool = new Pool({
     port: 5432,
     host: "localhost",
     user: "postgres",
-    password: "82850406m"
+    password: "82850406sh"
 });
 
 export const fetch = async (query, type, ...params) => {
