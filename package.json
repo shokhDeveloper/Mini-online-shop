@@ -1,5 +1,5 @@
 {
-  "name": "magazin",
+  "name": "online-shop",
   "version": "1.0.0",
   "description": "",
   "main": "src/server.js",
@@ -19,7 +19,8 @@
     "#jwt": "./src/utils/jwt.js",
     "#postgreSQL": "./src/middlewares/postgres.js",
     "#verifyToken": "./src/middlewares/authToken.js",
-    "#adminVerifyToken": "./src/middlewares/adminToken.js"
+    "#adminVerifyToken": "./src/middlewares/adminToken.js",
+    "#updateAdmin": "./src/middlewares/updateAdmin.js"
   },
   "keywords": [],
   "author": "",

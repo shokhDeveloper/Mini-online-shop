@@ -17,7 +17,8 @@ CREATE TABLE admins(
     admin_id BIGSERIAL NOT NULL PRIMARY KEY,
     admin_username VARCHAR(32) NOT NULL,
     admin_password VARCHAR(128) NOT NULL,
-    admin_confirm_password VARCHAR(128) NOT NULL
+    admin_confirm_password VARCHAR(128) NOT NULL,
+    admin_profile_image VARCHAR(500) 
 );
 
 DROP TABLE IF EXISTS categories CASCADE;
@@ -47,3 +48,16 @@ CREATE TABLE products(
 );
 -- INSERT INTO products (product_name, product_price, product_image, category_id) VALUES
 -- ('Asus', 1200.00, 'asus.png', 2)
+DROP TABLE IF EXISTS shops CASCADE;
+CREATE TABLE shops(
+    shop_id BIGSERIAL primary key NOT NULL,
+    shop_user_id INT references users(user_id) NOT NULL,
+    shop_product_id INT references products(product_id) NOT NULL,
+    payment BOOLEAN default false NOT NULL
+);
+
+-- DROP TABLE IF EXISTS archive_purchase CASCADE;
+-- CREATE TABLE archive_purchase{
+--     archive_purchase_user_id INT references users (user_id) NOT NULL,
+--     archive_purchase_product_id INT references products (product_id) NOT NULL,
+-- }

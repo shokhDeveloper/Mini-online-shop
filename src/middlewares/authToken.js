@@ -13,6 +13,7 @@ export const authToken = async (req, res, next) => {
             if(!verifyToken) throw new ClientError(499, 'Token is required');
             if(verifyToken.client){
                 if(!users.some((user) => user.user_id == verifyToken.user_id) || !(verifyToken.userAgent == req.headers["user-agent"])) throw new ClientError(498, "Invalid token !"); 
+                req.user_id = verifyToken.user_id;
                 return next();
             }
             if(verifyToken.admin){

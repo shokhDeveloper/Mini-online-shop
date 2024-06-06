@@ -1,39 +1,92 @@
+import fs from "node:fs";
+import { ClientError, ServerError, globalError } from "#error"
+import { fetch, getProducts, updateProduct } from "#postgreSQL"
+import { productValidator, productValidatorFromProductImage } from "#validator";
 import path from "node:path";
-import { ServerError, globalError } from "#error"
-import { fetch, getProducts } from "#postgreSQL"
-import { productValidator } from "#validator";
+import { serverConfiguration } from "#config";
 
 export const productController = {
     GET: async function(req, res){
         try{    
-            const products = await getProducts();
+            const {productId} = req.params;
+            const products = await getProducts(productId);
             return res.json(products);
+        }catch(error){
+            return globalError(res, error); 
+        }
+    },  
+    POST: async function(req, res){
+        try{
+            const newProduct = req.body;
+            if(req.files){
+                if(productValidator.validate(newProduct).error instanceof Error){
+                    return res.status(400).json({message: productValidator.validate(newProduct).error.message, statusCode: 400})
+                }
+                if(productValidator.validate(newProduct)){
+                    let product_image = req.product_image;
+                    return req.insertProduct(product_image)
+                };
+            } throw new ClientError(400, "Product image is requried !");
         }catch(error){
             return globalError(res, error);
         }
     },
-    POST: async function(req, res){
+    PUT: async function(req, res){
         try{
-            const newProduct = req.body;
-            if(productValidator.validate(newProduct).error instanceof Error){
-                return res.status(400).json({message: productValidator.validate(newProduct).error.message, statusCode: 400})
-            }
-            if(productValidator.validate(newProduct)){
-                let product_image = req.product_image;
-                const pathname = path.join(process.cwd(), "uploads", product_image);
-                const {product_image:{mv}} = req.files;
-                const insertProduct = await fetch(`
-                INSERT INTO products (product_name, product_price, category_id, product_image) 
-                VALUES
-                ($1, $2, $3, $4) RETURNING *;
-                `, true, newProduct.product_name, newProduct.product_price, newProduct.category_id, pathname);
-                if(insertProduct.product_id){
-                    mv(pathname);
-                    return res.status(201).json({message: "The product successfully created !", statusCode: 201, product: insertProduct});
-                }else throw new ServerError("PostgreSQL failed to create product");
-            }
+            const {productId} = req.params;
+            const updateProductValues = req.body;
+            const files = req.files;
+            const product = await fetch("SELECT * FROM products WHERE product_id=$1;", true, productId);
+            if(productValidator.validate(updateProductValues).error instanceof Error) throw new ClientError(400, productValidator.validate(updateProductValues).error.message);  
+            if(files){
+                const oldProductImage = product.product_image;
+                const exists = fs.existsSync(oldProductImage);
+                if(exists) {
+                    const newProductImagePath = path.join(process.cwd(), "uploads", req.product_image)
+                    const updateProductRes = await updateProduct(productId, updateProductValues.product_name, updateProductValues.product_price ? +updateProductValues.product_price : 0, updateProductValues.category_id ? +updateProductValues.category_id: 0, newProductImagePath);
+                    console.log(updateProductRes)
+                    if(updateProductRes.product_id) {
+                        serverConfiguration.userSetDefaultImage(oldProductImage);
+                        files.product_image.mv(newProductImagePath);
+                        return res.status(200).json({message: "Product successfully updated", product: updateProductRes, statusCode: 200})
+                    }
+                }else throw new ServerError("Old product image is not found !");
+            };
+            const updateProductRes = await updateProduct(productId, updateProductValues.product_name, updateProductValues.product_price ? +updateProductValues.product_price : 0, updateProductValues.category_id ? +updateProductValues.category_id: 0, updateProductValues.product_image);
+            if(updateProductRes.product_id) return res.status(200).json({message: "Product successfully updated", product: updateProductRes, statusCode: 200})
+        }catch(error){
+            console.log(error);
+            return globalError(res, error)
+        }
+    },
+    DELETE: async function(req, res){
+        try{
+            const {productId} = req.params;
+            const product = await fetch(`SELECT * FROM products WHERE product_id=$1`, true, productId);
+             if(!product.product_id) throw new ClientError(404, "Product is not found");
+            const deleteProduct = await fetch(`DELETE from products WHERE product_id=$1 RETURNING *`, true, productId);
+            if(deleteProduct.product_id) {
+                fs.unlinkSync(deleteProduct.product_image);
+                return res.status(200).json({message: "The product successfully deleted !", product: deleteProduct, statusCode: 200}) 
+            } 
         }catch(error){
             return globalError(res, error);
+        }
+    },
+    MEDIA:{
+        GET: async function(req, res){
+            try{
+                const {productId} = req.params;
+                const product = await fetch(`SELECT * FROM products WHERE product_id=$1`, true, productId);
+                if(product.product_id){
+                    const type = fs.existsSync(product.product_image);
+                    if(type) {
+                        return res.sendFile(product.product_image);
+                    }else throw new ServerError("Product image is not found");
+                }   
+            }catch(error){
+                return globalError(res, error);
+            }    
         }
     }
 }

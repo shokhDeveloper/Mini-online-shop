@@ -2,7 +2,7 @@ import { globalError } from "#error"
 import { getCategories } from "#postgreSQL";
 
 export const categoryController = {
-    GET: async function(req, res){
+    GET: async function(_, res){
         try{
             const categories = await getCategories();
             return res.status(200).json(categories)

@@ -6,3 +6,4 @@ export const usersRouter = e.Router();
 
 usersRouter.route("/").get(adminToken, userController.GET);
 usersRouter.route("/:userId").get(adminToken, userController.GET);
+usersRouter.route("/:userId/image").get(userController.MEDIA.GET);
