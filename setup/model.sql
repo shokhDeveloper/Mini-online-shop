@@ -46,8 +46,6 @@ CREATE TABLE products(
     category_id INT references categories(category_id) NOT NULL,
     created_at TIMESTAMPTZ default current_timestamp 
 );
--- INSERT INTO products (product_name, product_price, product_image, category_id) VALUES
--- ('Asus', 1200.00, 'asus.png', 2)
 DROP TABLE IF EXISTS shops CASCADE;
 CREATE TABLE shops(
     shop_id BIGSERIAL primary key NOT NULL,
@@ -55,6 +53,8 @@ CREATE TABLE shops(
     shop_product_id INT references products(product_id) NOT NULL,
     payment BOOLEAN default false NOT NULL
 );
+-- INSERT INTO products (product_name, product_price, product_image, category_id) VALUES
+-- ('Asus', 1200.00, 'asus.png', 2)
 
 -- DROP TABLE IF EXISTS archive_purchase CASCADE;
 -- CREATE TABLE archive_purchase{

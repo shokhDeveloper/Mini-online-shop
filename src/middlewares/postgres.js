@@ -1,13 +1,8 @@
 import pkg from "pg";
 const {Pool} = pkg;
-export const pool = new Pool({
-    database: "magazin",
-    port: 5432,
-    host: "localhost",
-    user: "postgres",
-    password: "82850406sh"
-});
-
+const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+})
 export const fetch = async (query, type, ...params) => {
     const client = await pool.connect();
     try{
