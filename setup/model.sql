@@ -20,7 +20,7 @@ CREATE TABLE admins(
     admin_confirm_password VARCHAR(128) NOT NULL,
     admin_profile_image VARCHAR(500) 
 );
-
+INSERT INTO admins (admin_username, admin_password, admin_confirm_password) VALUES ("Elyorbek", crypt("@khujamov_1", gen_salt('bf')), crypt("@khujamov_1", gen_salt('bf')));
 DROP TABLE IF EXISTS categories CASCADE;
 CREATE TABLE categories(
     category_id BIGSERIAL NOT NULL PRIMARY KEY,

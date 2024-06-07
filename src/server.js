@@ -35,7 +35,7 @@ app.use("/users", usersRouter);
 app.use("/products", productRouter);    
 app.use("/categories", categoryRouter);
 app.use("/admins", adminRouter)
-
+    
 app.listen(PORT, () => {
     console.log(`Server is running http://${ip_address}:${PORT}`);
 });

@@ -5,6 +5,8 @@ export const shopController = {
     GET: async function(req, res) {
         try{
             const {userId} = req.params;
+            if(!req.user_id) throw new ClientError(404, "User is invalid or user not found !");
+            if(!(userId == req.user_id)) throw new ClientError(401, "Your token does not respond to this request")
             const shops = await getShops(userId);
             return res.status(200).json(shops);
         }catch(error){

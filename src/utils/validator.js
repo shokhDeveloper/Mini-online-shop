@@ -25,7 +25,7 @@ export const avatarValidator = (req, res, next) => {
         if(req.files){
             const {avatar:{name, size}} = req.files;
             const fileSize = size / 1024 ** 2;
-            if(7 < fileSize) throw new ClientError(413, "Avatar size must not exceed 7mb");
+            if(5 < fileSize) throw new ClientError(413, "Avatar size must not exceed 7mb");
             let filename = name.replaceAll(" ", "");
             const extname = path.extname(filename);
             if(!serverConfiguration.avatar_formats.includes(extname)) throw new ClientError(415, "The program does not support the avatar format !");
@@ -59,7 +59,7 @@ const imageValidator = (req, next) => {
     let product_name =  Date.now() + name.replaceAll(" ", "");
     const extname = path.extname(product_name);
     const fileSize = size / 1024 ** 2;
-    if(fileSize > 7) throw new ClientError(413, "Product image size must not exeed 7mb");
+    if(fileSize > 5) throw new ClientError(413, "Product image size must not exeed 7mb");
     if(!serverConfiguration.avatar_formats.includes(extname)) throw new ClientError(415, "The program does not support the avatar format !");
     req.product_image = product_name;
     return next()
@@ -69,7 +69,7 @@ const adminImageValidator = (req, next) => {
     let admin_profile_image =  Date.now() + name.replaceAll(" ", "");
     const extname = path.extname(admin_profile_image);
     const fileSize = size / 1024 ** 2;
-    if(fileSize > 7) throw new ClientError(413, "Image size must not exeed 7mb");
+    if(fileSize > 5) throw new ClientError(413, "Image size must not exeed 7mb");
     if(!serverConfiguration.avatar_formats.includes(extname)) throw new ClientError(415, "The program does not support the avatar format !");
     req.admin_image = admin_profile_image;
     return next()
